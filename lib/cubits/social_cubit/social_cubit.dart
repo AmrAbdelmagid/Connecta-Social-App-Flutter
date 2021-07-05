@@ -259,12 +259,91 @@ class SocialCubit extends Cubit<SocialStates> {
       image: userModel!.image,
       uid: FirebaseAuth.instance.currentUser!.uid,
     );
-    return FirebaseFirestore.instance.collection('posts').add(model.toMap()).then((value) {
+    return FirebaseFirestore.instance
+        .collection('posts')
+        .add(model.toMap())
+        .then((value) {
       emit(SocialCreatePostSuccessState());
       return true;
-    }).catchError((error,s){
+    }).catchError((error, s) {
       emit(SocialCreatePostErrorState());
       return false;
+    });
+  }
+
+  // getComments(int postIndex) {
+  //   FirebaseFirestore.instance
+  //       .collection('posts')
+  //       .doc(postsId[postIndex])
+  //       .collection('comments')
+  //       .get()
+  //       .then((value) {
+  //     value.docs.forEach((element) {
+  //      // postComments.add(element.data()[postsId[postIndex]]);
+  //      log(element.data()[userModel!.uid]);
+  //     });
+  //   }).catchError((error, s) {});
+  // }
+
+  List<String> postsId = [];
+  List<PostModel> posts = [];
+  List<int> likes = [];
+  List<int> comments = [];
+  List<String> postComments = [];
+
+  getPosts() {
+    emit(SocialGetPostLoadingState());
+    FirebaseFirestore.instance.collection('posts').get().then((value) {
+      value.docs.forEach((element) {
+        element.reference
+            .collection('likes')
+            .get()
+            .then((value) {
+              likes.add(value.docs.length);
+            })
+            .then((value) {
+              element.reference.collection('comments').get().then((value) {
+                comments.add(value.docs.length);
+              }).then((value) {
+                postsId.add(element.id);
+                posts.add(PostModel.fromFirebase(element.data()));
+                emit(SocialGetPostSuccessState());
+              });
+            })
+            .then((value) {})
+            .catchError((error, s) {});
+      });
+    }).catchError((error, s) {
+      emit(SocialGetPostErrorState());
+    });
+  }
+
+  likePost(String postId) {
+    FirebaseFirestore.instance
+        .collection('posts')
+        .doc(postId)
+        .collection('likes')
+        .doc(userModel!.uid)
+        .set({
+      'like': true,
+    }).then((value) {
+      emit(SocialLikePostSuccessState());
+    }).catchError((error) {
+      emit(SocialLikePostErrorState());
+    });
+  }
+
+  addComment(String comment, String postId, String userId) {
+    FirebaseFirestore.instance
+        .collection('posts')
+        .doc(postId)
+        .collection('comments')
+        .add({
+      userId: comment,
+    }).then((value) {
+      emit(SocialLikePostSuccessState());
+    }).catchError((error) {
+      emit(SocialLikePostErrorState());
     });
   }
 }
