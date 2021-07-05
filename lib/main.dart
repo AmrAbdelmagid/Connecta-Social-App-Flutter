@@ -3,6 +3,7 @@ import 'package:connecta_social_app/cubits/login_cubit/login_cubit.dart';
 import 'package:connecta_social_app/cubits/register_cubit/register_cubit.dart';
 import 'package:connecta_social_app/cubits/social_cubit/social_cubit.dart';
 import 'package:connecta_social_app/layouts/social_layout.dart';
+import 'package:connecta_social_app/screens/add_post_screen.dart';
 import 'package:connecta_social_app/screens/edit_profile_screen.dart';
 import 'package:connecta_social_app/screens/login_screen.dart';
 import 'package:connecta_social_app/screens/profile_screen.dart';
@@ -107,6 +108,7 @@ class MyApp extends StatelessWidget {
           SettingsScreen.routeName: (context) => SettingsScreen(),
           ProfileScreen.routeName: (context) => ProfileScreen(),
           EditProfileScreen.routeName: (context) => EditProfileScreen(),
+          AddPostScreen.routeName: (context) => AddPostScreen(),
         },
       ),
     );

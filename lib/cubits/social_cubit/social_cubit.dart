@@ -4,6 +4,9 @@ import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connecta_social_app/cubits/social_cubit/social_states.dart';
 import 'package:connecta_social_app/helpers/local/cache_helper.dart';
+import 'package:connecta_social_app/models/post_model.dart';
+import 'package:connecta_social_app/models/post_model.dart';
+import 'package:connecta_social_app/models/post_model.dart';
 import 'package:connecta_social_app/models/user_model.dart';
 import 'package:connecta_social_app/screens/chats_screen.dart';
 import 'package:connecta_social_app/screens/feeds_screen.dart';
@@ -48,6 +51,20 @@ class SocialCubit extends Cubit<SocialStates> {
     }
     coverImage = File(pickedFile.path);
     emit(SocialPickCoverSuccessState());
+  }
+
+  File? postImage;
+
+  Future<dynamic> pickPostImage() async {
+    final PickedFile? pickedFile =
+        await picker.getImage(source: ImageSource.gallery);
+    if (pickedFile == null) {
+      log('No image was picked');
+      emit(SocialPickPostImageErrorState());
+      return false;
+    }
+    postImage = File(pickedFile.path);
+    emit(SocialPickPostImageSuccessState());
   }
 
   UserModel? userModel;
@@ -145,36 +162,71 @@ class SocialCubit extends Cubit<SocialStates> {
     });
   }
 
+  String? postImageUrl;
+
+  Future<bool> uploadPostImage() {
+    emit(SocialUploadPostImageLoadingState());
+    return firebase_storage.FirebaseStorage.instance
+        .ref()
+        .child('users/${Uri.file(postImage!.path).pathSegments.last}')
+        .putFile(postImage!)
+        .then((value) {
+      return value.ref.getDownloadURL().then((value) {
+        log(value.toString());
+        postImageUrl = value.toString();
+        emit(SocialPickPostImageSuccessState());
+        return true;
+      }).catchError((error, s) {
+        log(error.toString());
+        log(s.toString());
+        emit(SocialPickPostImageErrorState());
+        return false;
+      });
+    }).catchError((error, s) {
+      log(error.toString());
+      log(s.toString());
+      emit(SocialPickPostImageErrorState());
+      return false;
+    });
+  }
+
   updateUser({
     required String name,
     required String phone,
     required String bio,
   }) {
     emit(SocialUpdateUserDataLoadingState());
-    if (profileImageUrl != null && coverImageUrl != null){
-     updateUserData(name: name, phone: phone, bio: bio,cover: coverImageUrl,image: profileImageUrl);
-    } else if (profileImageUrl != null && coverImageUrl == null){
-      updateUserData(name: name, phone: phone, bio: bio,image: profileImageUrl);
-    }else if (profileImageUrl == null && coverImageUrl != null){
-      updateUserData(name: name, phone: phone, bio: bio,cover: coverImageUrl);
+    if (profileImageUrl != null && coverImageUrl != null) {
+      updateUserData(
+          name: name,
+          phone: phone,
+          bio: bio,
+          cover: coverImageUrl,
+          image: profileImageUrl);
+    } else if (profileImageUrl != null && coverImageUrl == null) {
+      updateUserData(
+          name: name, phone: phone, bio: bio, image: profileImageUrl);
+    } else if (profileImageUrl == null && coverImageUrl != null) {
+      updateUserData(name: name, phone: phone, bio: bio, cover: coverImageUrl);
     } else {
       updateUserData(name: name, phone: phone, bio: bio);
     }
   }
+
   updateUserData({
     required String name,
     required String phone,
     required String bio,
     String? cover,
     String? image,
-  }){
+  }) {
     UserModel model = UserModel(
         name: name,
         email: FirebaseAuth.instance.currentUser!.email,
         phone: phone,
         bio: bio,
-        cover: cover?? userModel!.cover,
-        image: image?? userModel!.image,
+        cover: cover ?? userModel!.cover,
+        image: image ?? userModel!.image,
         uid: FirebaseAuth.instance.currentUser!.uid,
         isEmailVerified: FirebaseAuth.instance.currentUser!.emailVerified);
     FirebaseFirestore.instance
@@ -183,12 +235,36 @@ class SocialCubit extends Cubit<SocialStates> {
         .update(model.toMap())
         .then((value) {
       getUserData();
-    })
-        .catchError((error, s) {
+    }).catchError((error, s) {
       log(error.toString());
       log(s.toString());
       emit(SocialUpdateUserDataErrorState());
     });
   }
-}
 
+  Future<bool> createPost({
+    required String text,
+    required String dataTime,
+    String? name,
+    String? uid,
+    String? image,
+    String? postImage,
+  }) {
+    emit(SocialCreatePostLoadingState());
+    PostModel model = PostModel(
+      name: userModel!.name,
+      dateTime: dataTime,
+      text: text,
+      postImage: postImage ?? null,
+      image: userModel!.image,
+      uid: FirebaseAuth.instance.currentUser!.uid,
+    );
+    return FirebaseFirestore.instance.collection('posts').add(model.toMap()).then((value) {
+      emit(SocialCreatePostSuccessState());
+      return true;
+    }).catchError((error,s){
+      emit(SocialCreatePostErrorState());
+      return false;
+    });
+  }
+}

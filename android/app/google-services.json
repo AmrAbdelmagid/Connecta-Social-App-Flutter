@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1036251968709",
+    "project_id": "connecta-chat-3a5e9",
+    "storage_bucket": "connecta-chat-3a5e9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1036251968709:android:49ed20904b5f09be7b6cac",
+        "android_client_info": {
+          "package_name": "com.example.connecta_social_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1036251968709-803fh8v3kticm6sdh4la0a9bc6mtj9jo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.connecta_social_app",
+            "certificate_hash": "57cfb832264692b4538b5a3f29665849299e675e"
+          }
+        },
+        {
+          "client_id": "1036251968709-damp7uhru66gkv779203vubq6kp1pin7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2a2Zv7V5Crsh7Gv_qbhHcRXe01vY1Rns"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1036251968709-damp7uhru66gkv779203vubq6kp1pin7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

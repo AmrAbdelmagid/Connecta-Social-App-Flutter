@@ -28,3 +28,18 @@ class SocialUpdateUserDataErrorState extends SocialStates {}
 
 class SocialUpdateUserDataLoadingState extends SocialStates {}
 
+class SocialPickPostImageSuccessState extends SocialStates {}
+
+class SocialPickPostImageErrorState extends SocialStates {}
+
+class SocialUploadPostImageLoadingState extends SocialStates {}
+
+class SocialUploadPostImageSuccessState extends SocialStates {}
+
+class SocialUploadPostImageErrorState extends SocialStates {}
+
+class SocialCreatePostLoadingState extends SocialStates {}
+
+class SocialCreatePostSuccessState extends SocialStates {}
+
+class SocialCreatePostErrorState extends SocialStates {}

@@ -2,6 +2,7 @@
 import 'package:connecta_social_app/components/app_toast.dart';
 import 'package:connecta_social_app/cubits/social_cubit/social_cubit.dart';
 import 'package:connecta_social_app/cubits/social_cubit/social_states.dart';
+import 'package:connecta_social_app/screens/add_post_screen.dart';
 import 'package:connecta_social_app/screens/settings_screen.dart';
 import 'package:connecta_social_app/utils/constants.dart';
 import 'package:connecta_social_app/utils/styles/icon_broken.dart';
@@ -32,6 +33,11 @@ class _SocialLayoutState extends State<SocialLayout> {
                 IconButton(
                     onPressed: () {},
                     icon: Icon(IconBroken.Notification)),
+                IconButton(
+                    onPressed: () {
+                      Navigator.of(context).pushNamed(AddPostScreen.routeName);
+                    },
+                    icon: Icon(IconBroken.Paper_Plus)),
                 IconButton(
                     onPressed: () {},
                     icon: Icon(IconBroken.Search)),
