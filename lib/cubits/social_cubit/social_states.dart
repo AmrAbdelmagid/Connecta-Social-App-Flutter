@@ -53,3 +53,17 @@ class SocialGetPostErrorState extends SocialStates {}
 class SocialLikePostSuccessState extends SocialStates {}
 
 class SocialLikePostErrorState extends SocialStates {}
+
+class SocialGetUsersLoadingState extends SocialStates {}
+
+class SocialGetUsersSuccessState extends SocialStates {}
+
+class SocialGetUsersErrorState extends SocialStates {}
+
+class SocialPullToRefreshSuccessState extends SocialStates {}
+
+class SocialSendMessageSuccessState extends SocialStates {}
+
+class SocialSendMessageErrorState extends SocialStates {}
+
+class SocialGetMessageSuccessState extends SocialStates {}

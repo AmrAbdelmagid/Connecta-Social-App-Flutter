@@ -25,7 +25,7 @@ class _SocialLayoutState extends State<SocialLayout> {
       builder: (context, state) {
         var cubit = SocialCubit.get(context);
         return GestureDetector(
-          onTap: (){FocusScope.of(context).requestFocus(new FocusNode());},
+          onTap: (){FocusScope.of(context).requestFocus(FocusNode());},
           child: Scaffold(
             appBar: AppBar(
               title: Text(cubit.titles[cubit.currentIndex]),

@@ -3,6 +3,7 @@ import 'package:connecta_social_app/components/app_toast.dart';
 import 'package:connecta_social_app/components/default_text_field.dart';
 import 'package:connecta_social_app/cubits/login_cubit/login_cubit.dart';
 import 'package:connecta_social_app/cubits/login_cubit/login_states.dart';
+import 'package:connecta_social_app/cubits/social_cubit/social_cubit.dart';
 import 'package:connecta_social_app/helpers/local/cache_helper.dart';
 import 'package:connecta_social_app/layouts/social_layout.dart';
 import 'package:connecta_social_app/screens/register_screen.dart';
@@ -43,6 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
           AppToast.showToastMessage(message: state.error, toastType: ToastType.ERROR);
         }
         if (state is LoginSuccessState) {
+          SocialCubit.get(context).currentIndex = 0;
            CacheHelper.saveData(key: 'uid', value: state.uid).then((value) {
              Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => SocialLayout()), (route) => false);
              isLogin = false;

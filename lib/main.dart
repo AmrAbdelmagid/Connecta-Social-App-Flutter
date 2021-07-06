@@ -1,9 +1,11 @@
 import 'package:bloc/bloc.dart';
+import 'package:connecta_social_app/components/app_toast.dart';
 import 'package:connecta_social_app/cubits/login_cubit/login_cubit.dart';
 import 'package:connecta_social_app/cubits/register_cubit/register_cubit.dart';
 import 'package:connecta_social_app/cubits/social_cubit/social_cubit.dart';
 import 'package:connecta_social_app/layouts/social_layout.dart';
 import 'package:connecta_social_app/screens/add_post_screen.dart';
+import 'package:connecta_social_app/screens/chat_screen.dart';
 import 'package:connecta_social_app/screens/edit_profile_screen.dart';
 import 'package:connecta_social_app/screens/login_screen.dart';
 import 'package:connecta_social_app/screens/profile_screen.dart';
@@ -11,11 +13,16 @@ import 'package:connecta_social_app/screens/register_screen.dart';
 import 'package:connecta_social_app/screens/settings_screen.dart';
 import 'package:connecta_social_app/utils/constants.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'helpers/bloc_observer/bloc_observer_helper.dart';
 import 'helpers/local/cache_helper.dart';
+
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+ AppToast.showToastMessage(message: 'WOOOOOOW', toastType: ToastType.SUCCESS);
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,6 +31,13 @@ void main() async {
     DeviceOrientation.portraitDown,
   ]);
   await Firebase.initializeApp();
+
+  var token = await FirebaseMessaging.instance.getToken();
+
+  FirebaseMessaging.onMessage.listen((event) { }); //app is open
+  FirebaseMessaging.onMessageOpenedApp.listen((event) { }); //app is open in background
+  FirebaseMessaging.onBackgroundMessage((firebaseMessagingBackgroundHandler));
+
   await CacheHelper.initCache();
   uid = CacheHelper.getData(key: 'uid');
   Bloc.observer = MyBlocObserver();
